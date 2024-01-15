@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,6 @@ export class ContactService {
 
   addUser(user: any): Observable<any> {
     console.log('USERDATA into service:::POST', user);
-    return this.http.post(`${this.apiUrl}/saveUserInfo`, user);
+    return this.httpClient.post(`${this.apiUrl}/saveUserInfo`, user);
   }
 }
