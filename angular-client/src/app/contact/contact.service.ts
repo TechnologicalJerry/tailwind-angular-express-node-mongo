@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,5 +7,5 @@ import { Injectable } from '@angular/core';
 export class ContactService {
   apiUrl = 'http://localhost:5050/user';
 
-  constructor(private http: HttpClient) {}
+  constructor(private httpClient: HttpClient) {}
 }
