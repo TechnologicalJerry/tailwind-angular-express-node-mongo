@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContactService {
+  apiUrl = 'http://localhost:5050/user';
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 }
