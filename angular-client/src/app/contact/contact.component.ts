@@ -67,4 +67,12 @@ export class ContactComponent {
       ],
     });
   }
+
+  get myForm() {
+    return this.userForm.controls;
+  }
+
+  protected get registerFormControl() {
+    return this.userForm.controls;
+  }
 }
