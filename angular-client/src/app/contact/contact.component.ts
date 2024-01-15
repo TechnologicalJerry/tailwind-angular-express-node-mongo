@@ -15,4 +15,6 @@ export class ContactComponent {
   email: any;
 
   userForm: any = new FormGroup({});
+
+  constructor(private userService: AppService, private fb: FormBuilder) {}
 }
