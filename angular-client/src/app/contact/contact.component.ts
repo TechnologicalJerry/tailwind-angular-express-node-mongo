@@ -9,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class ContactComponent {
 
+  submitted = false;
+
+  email: any;
+
+  userForm: any = new FormGroup({});
 }
