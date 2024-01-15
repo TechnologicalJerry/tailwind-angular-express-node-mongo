@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ContactService } from './contact.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
