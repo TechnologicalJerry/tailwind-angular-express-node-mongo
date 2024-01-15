@@ -4,6 +4,7 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { ContactService } from './contact.service';
 import { HttpClientModule } from '@angular/common/http';
