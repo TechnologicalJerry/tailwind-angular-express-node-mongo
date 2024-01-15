@@ -75,4 +75,40 @@ export class ContactComponent {
   protected get registerFormControl() {
     return this.userForm.controls;
   }
+
+  onSubmit(): void {
+    // if (this.userForm.value.address) {
+    //   const enteredAddress = this.userForm.value.address;
+    //   const validAddress = this.patternAddress(enteredAddress);
+
+    //   if (validAddress.match) {
+    //     console.log('Parsed Address:', validAddress);
+    //   } else {
+    //     console.error('Invalid Address');
+    //   }
+    //   this.userForm.value.address = validAddress;
+    // }
+    console.log('USER Info into component::BEFORE', this.userForm.value);
+    if (this.userForm.get('email').valid) {
+      console.log('USER Info into component::AFTER', this.userForm.value);
+      let user = this.userForm.value;
+      console.log('USER Info into component::', user);
+
+      this.userService.addUser(user).subscribe(
+        (response: any) => {
+          console.log('User added successfully:', response.data);
+          if (response.status === 200) {
+            this.initializeForm();
+            this.userForm.value = this.userForm.reset(response.data);
+          }
+        },
+        (error) => {
+          console.error('Error adding user:', error);
+        }
+      );
+    } else {
+      console.warn('there are some error while adding Users Values');
+    }
+  }
+
 }
