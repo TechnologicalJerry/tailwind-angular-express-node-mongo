@@ -16,5 +16,5 @@ export class ContactComponent {
 
   userForm: any = new FormGroup({});
 
-  constructor(private userService: AppService, private fb: FormBuilder) {}
+  constructor(private contactService: ContactService, private fb: FormBuilder) {}
 }
