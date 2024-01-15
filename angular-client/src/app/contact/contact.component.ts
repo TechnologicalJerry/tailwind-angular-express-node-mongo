@@ -77,17 +77,6 @@ export class ContactComponent {
   }
 
   onSubmit(): void {
-    // if (this.userForm.value.address) {
-    //   const enteredAddress = this.userForm.value.address;
-    //   const validAddress = this.patternAddress(enteredAddress);
-
-    //   if (validAddress.match) {
-    //     console.log('Parsed Address:', validAddress);
-    //   } else {
-    //     console.error('Invalid Address');
-    //   }
-    //   this.userForm.value.address = validAddress;
-    // }
     console.log('USER Info into component::BEFORE', this.userForm.value);
     if (this.userForm.get('email').valid) {
       console.log('USER Info into component::AFTER', this.userForm.value);
