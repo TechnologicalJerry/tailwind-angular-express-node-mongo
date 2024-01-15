@@ -83,7 +83,7 @@ export class ContactComponent {
       let user = this.userForm.value;
       console.log('USER Info into component::', user);
 
-      this.userService.addUser(user).subscribe(
+      this.contactService.addUser(user).subscribe(
         (response: any) => {
           console.log('User added successfully:', response.data);
           if (response.status === 200) {
