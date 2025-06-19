@@ -179,22 +179,13 @@ angular-client/
 │   │   │   ├── directives/
 
 │   │   │   └── pipes/
-
 │
-
 │   ├── index.html
-
 │   ├── main.ts                              # Bootstrap with bootstrapApplication
-
 │   ├── styles.scss                          # Global styles
-
 │
-
 ├── angular.json
-
 ├── tsconfig.json
-
 ├── package.json
-
 └── README.md
 
