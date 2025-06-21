@@ -45,6 +45,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         res.status(201).json({ message: "User registered successfully" });
 
     } catch (err) {
+        console.error("Error during registration:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -53,11 +54,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     console.log("Logging in user with data:", req.body);
     try {
-        const { login, password } = req.body; // `login` can be email or userName
+        const { userId, password } = req.body;
 
         // Find user by email OR username
         const user = await User.findOne({
-            $or: [{ email: login }, { userName: login }],
+            $or: [{ email: userId }, { userName: userId }],
         });
 
         if (!user) {
@@ -75,8 +76,14 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             expiresIn: "1h",
         });
 
-        res.status(200).json({ token });
+        res.status(200).json({
+            status: true,
+            message: "Login successful",
+            token: token
+        });
+
     } catch (err) {
+        console.error("Error during login:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
