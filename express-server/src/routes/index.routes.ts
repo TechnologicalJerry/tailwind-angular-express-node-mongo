@@ -1,13 +1,31 @@
-import { Express } from "express";
-import userRoutes from "./user.routes";
-import sessionRoutes from "./session.routes";
-import productRoutes from "./product.routes";
+import { Router } from 'express';
+import authRoutes from './auth.routes.js';
+import userRoutes from './user.routes.js';
+import productRoutes from './product.routes.js';
 
-function routes(app: Express) {
-  // API Routes
-  app.use("/api/users", userRoutes);
-  app.use("/api/sessions", sessionRoutes);
-  app.use("/api/products", productRoutes);
-}
+const router = Router();
 
-export default routes;
+// API info endpoint
+router.get('/', (req, res) => {
+  res.json({
+    message: 'Express API Server',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      users: '/api/users',
+      products: '/api/products'
+    }
+  });
+});
+
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Mount sub-routes
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
+router.use('/products', productRoutes);
+
+export default router;
