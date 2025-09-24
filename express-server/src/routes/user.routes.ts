@@ -1,17 +1,11 @@
-import express from "express";
-import {
-  registerUser,
-  loginUser,
-  updateUser,
-  deleteUser,
-} from "../controllers/user.controller";
-import { authenticateJWT } from "../middleware/auth.middleware";
+import { Router } from "express";
+import { createUserHandler } from "../controller/user.controller";
+import validateResource from "../middleware/validateResource";
+import { createUserSchema } from "../schema/user.schema";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.put("/update", authenticateJWT, updateUser);
-router.delete("/delete", authenticateJWT, deleteUser);
+// POST /api/users - Register a new user
+router.post("/", validateResource(createUserSchema), createUserHandler);
 
 export default router;
