@@ -1,15 +1,25 @@
 import { User, type IUser } from '../models/user.model.js';
 
 export interface CreateUserData {
-  name: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
   email: string;
   password: string;
+  phone: string;
+  gender: 'male' | 'female' | 'other';
+  dob: Date;
 }
 
 export interface UpdateUserData {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
   email?: string;
   password?: string;
+  phone?: string;
+  gender?: 'male' | 'female' | 'other';
+  dob?: Date;
 }
 
 export const userService = {
@@ -28,6 +38,10 @@ export const userService = {
 
   findByEmail: async (email: string): Promise<IUser | null> => {
     return await User.findOne({ email });
+  },
+
+  findByUsername: async (userName: string): Promise<IUser | null> => {
+    return await User.findOne({ userName });
   },
 
   update: async (id: string, updateData: UpdateUserData): Promise<IUser | null> => {
