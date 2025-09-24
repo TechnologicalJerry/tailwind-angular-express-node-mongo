@@ -1,49 +1,39 @@
-import express, { Request, Response } from "express";
-import responseTime from "response-time";
-import deserializeUser from "./middleware/deserializeUser";
-import requestLogger from "./middleware/requestLogger";
-import { restResponseTimeHistogram } from "./utils/metrics";
-import routes from "./routes/index.routes";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Import routes
+import indexRoutes from './routes/index.routes.js';
+
 
 const app = express();
 
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(morgan('combined'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware (should be first)
-app.use(requestLogger);
+// Routes
+app.use('/api', indexRoutes);
 
-app.use(deserializeUser);
 
-app.use(
-  responseTime((req: Request, res: Response, time: number) => {
-    if (req?.route?.path) {
-      restResponseTimeHistogram.observe(
-        {
-          method: req.method,
-          route: req.route.path,
-          status_code: res.statusCode,
-        },
-        time * 1000
-      );
-    }
-  })
-);
 
-// Health check endpoint
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-    version: process.version
-  });
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
-// Health check endpoint (alternative)
-app.get("/healthcheck", (req: Request, res: Response) => res.sendStatus(200));
-
-// API Routes
-routes(app);
+// Error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 export default app;
