@@ -1,41 +1,58 @@
-import mongoose from "mongoose";
-import { customAlphabet } from "nanoid";
-import { UserDocument } from "./user.model";
+import mongoose, { type Document, Schema } from 'mongoose';
 
-const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
-
-export interface ProductInput {
-  user: UserDocument["_id"];
-  title: string;
+export interface IProduct extends Document {
+  name: string;
   description: string;
   price: number;
-  image: string;
-}
-
-export interface ProductDocument extends ProductInput, mongoose.Document {
+  category: string;
+  stock: number;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const productSchema = new mongoose.Schema(
-  {
-    productId: {
-      type: String,
-      required: true,
-      unique: true,
-      default: () => `product_${nanoid()}`,
-    },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    price: { type: Number, required: true },
-    image: { type: String, required: true },
+const productSchema = new Schema<IProduct>({
+  name: {
+    type: String,
+    required: [true, 'Product name is required'],
+    trim: true,
+    minlength: [2, 'Product name must be at least 2 characters long'],
+    maxlength: [100, 'Product name cannot exceed 100 characters']
   },
-  {
-    timestamps: true,
+  description: {
+    type: String,
+    required: [true, 'Product description is required'],
+    trim: true,
+    minlength: [10, 'Product description must be at least 10 characters long'],
+    maxlength: [500, 'Product description cannot exceed 500 characters']
+  },
+  price: {
+    type: Number,
+    required: [true, 'Product price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  category: {
+    type: String,
+    required: [true, 'Product category is required'],
+    trim: true,
+    enum: {
+      values: ['electronics', 'clothing', 'books', 'home', 'sports', 'other'],
+      message: 'Category must be one of: electronics, clothing, books, home, sports, other'
+    }
+  },
+  stock: {
+    type: Number,
+    required: [true, 'Stock quantity is required'],
+    min: [0, 'Stock cannot be negative'],
+    default: 0
+  },
+  imageUrl: {
+    type: String,
+    trim: true,
+    match: [/^https?:\/\/.+/, 'Image URL must be a valid HTTP/HTTPS URL']
   }
-);
+}, {
+  timestamps: true
+});
 
-const ProductModel = mongoose.model<ProductDocument>("Product", productSchema);
-
-export default ProductModel;
+export const Product = mongoose.model<IProduct>('Product', productSchema);
