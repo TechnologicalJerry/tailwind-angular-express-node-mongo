@@ -1,54 +1,43 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import config from "../config";
+import mongoose, { type Document, Schema } from 'mongoose';
 
-export interface UserInput {
-  email: string;
+export interface IUser extends Document {
   name: string;
+  email: string;
   password: string;
-}
-
-export interface UserDocument extends UserInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<Boolean>;
 }
 
-const userSchema = new mongoose.Schema(
-  {
-    email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    password: { type: String, required: true },
+const userSchema = new Schema<IUser>({
+  name: {
+    type: String,
+    required: [true, 'Name is required'],
+    trim: true,
+    minlength: [2, 'Name must be at least 2 characters long'],
+    maxlength: [50, 'Name cannot exceed 50 characters']
   },
-  {
-    timestamps: true,
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    lowercase: true,
+    trim: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters long']
   }
-);
-
-userSchema.pre("save", async function (next) {
-  const user = this as unknown as UserDocument;
-
-  if (!user.isModified("password")) {
-    return next();
-  }
-
-  const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
-
-  const hash = await bcrypt.hashSync(user.password, salt);
-
-  user.password = hash;
-
-  return next();
+}, {
+  timestamps: true
 });
 
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
-  const user = this as UserDocument;
-
-  return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+// Remove password from JSON output
+userSchema.methods.toJSON = function() {
+  const userObject = this.toObject();
+  delete userObject.password;
+  return userObject;
 };
 
-const UserModel = mongoose.model<UserDocument>("User", userSchema);
-
-export default UserModel;
+export const User = mongoose.model<IUser>('User', userSchema);
