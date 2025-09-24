@@ -1,47 +1,18 @@
-import { Router } from "express";
-import {
-  createProductHandler,
-  getProductHandler,
-  updateProductHandler,
-  deleteProductHandler,
-} from "../controller/product.controller";
-import requireUser from "../middleware/requireUser";
-import validateResource from "../middleware/validateResource";
-import {
-  createProductSchema,
-  deleteProductSchema,
-  getProductSchema,
-  updateProductSchema,
-} from "../schema/product.schema";
+import type { Router } from 'express';
+import { productController } from '../controllers/product.controller.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-// POST /api/products - Create a new product
-router.post(
-  "/",
-  [requireUser, validateResource(createProductSchema)],
-  createProductHandler
-);
+// Public routes
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProductById);
 
-// GET /api/products/:productId - Get a single product
-router.get(
-  "/:productId",
-  validateResource(getProductSchema),
-  getProductHandler
-);
+// Protected routes (require authentication)
+router.use(authMiddleware);
 
-// PUT /api/products/:productId - Update a product
-router.put(
-  "/:productId",
-  [requireUser, validateResource(updateProductSchema)],
-  updateProductHandler
-);
-
-// DELETE /api/products/:productId - Delete a product
-router.delete(
-  "/:productId",
-  [requireUser, validateResource(deleteProductSchema)],
-  deleteProductHandler
-);
+router.post('/', productController.createProduct);
+router.put('/:id', productController.updateProduct);
+router.delete('/:id', productController.deleteProduct);
 
 export default router;
