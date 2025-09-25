@@ -1,4 +1,4 @@
-import type { Router } from 'express';
+import { Router } from 'express';
 import { productController } from '../controllers/product.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
