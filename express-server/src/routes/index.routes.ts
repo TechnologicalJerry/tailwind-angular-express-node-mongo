@@ -8,7 +8,7 @@ const router = Router();
 // API info endpoint
 router.get('/', (req, res) => {
   res.json({
-    message: 'Express API Server',
+    message: 'Express API Server of Tailwind Angular Express Node Mongo',
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
