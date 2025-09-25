@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app';
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tailwind-angular-express-node-mongo';
     
     console.log('🔄 Connecting to MongoDB...');
     console.log(`📍 Database URI: ${mongoURI}`);
