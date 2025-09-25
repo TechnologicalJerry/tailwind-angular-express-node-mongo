@@ -1,11 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
+
+// Import logging utilities
+import { logInfo, logError } from './utils/logger.js';
+import { morganMiddleware, morganErrorMiddleware } from './utils/morgan.js';
 
 // Import routes
 import indexRoutes from './routes/index.routes.js';
@@ -13,12 +16,21 @@ import indexRoutes from './routes/index.routes.js';
 
 const app = express();
 
-// Middleware
+// Logging middleware (must be first)
+app.use(morganMiddleware());
+app.use(morganErrorMiddleware());
+
+// Security middleware
 app.use(helmet());
 app.use(cors());
-app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Log application startup
+logInfo('🚀 Express server starting...', {
+  environment: process.env.NODE_ENV,
+  port: process.env.PORT
+});
 
 // Routes
 app.use('/api', indexRoutes);
@@ -26,14 +38,26 @@ app.use('/api', indexRoutes);
 
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req: express.Request, res: express.Response) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
 // Error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  logError('Application error occurred', {
+    error: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get('User-Agent')
+  });
+
+  res.status(500).json({
+    message: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message
+  });
 });
 
 export default app;
