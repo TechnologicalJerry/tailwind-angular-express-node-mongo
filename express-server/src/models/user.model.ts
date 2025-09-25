@@ -1,20 +1,41 @@
 import mongoose, { type Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
-  name: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
   email: string;
   password: string;
+  phone: string;
+  gender: 'male' | 'female' | 'other';
+  dob: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const userSchema = new Schema<IUser>({
-  name: {
+  firstName: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, 'First name is required'],
     trim: true,
-    minlength: [2, 'Name must be at least 2 characters long'],
-    maxlength: [50, 'Name cannot exceed 50 characters']
+    minlength: [2, 'First name must be at least 2 characters long'],
+    maxlength: [50, 'First name cannot exceed 50 characters']
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Last name is required'],
+    trim: true,
+    minlength: [2, 'Last name must be at least 2 characters long'],
+    maxlength: [50, 'Last name cannot exceed 50 characters']
+  },
+  userName: {
+    type: String,
+    required: [true, 'Username is required'],
+    unique: true,
+    trim: true,
+    minlength: [3, 'Username must be at least 3 characters long'],
+    maxlength: [30, 'Username cannot exceed 30 characters'],
+    match: [/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores']
   },
   email: {
     type: String,
@@ -28,6 +49,32 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
+  },
+  phone: {
+    type: String,
+    required: [true, 'Phone number is required'],
+    trim: true,
+    match: [/^[\+]?[1-9][\d]{0,15}$/, 'Please enter a valid phone number']
+  },
+  gender: {
+    type: String,
+    required: [true, 'Gender is required'],
+    enum: {
+      values: ['male', 'female', 'other'],
+      message: 'Gender must be male, female, or other'
+    }
+  },
+  dob: {
+    type: Date,
+    required: [true, 'Date of birth is required'],
+    validate: {
+      validator: function(value: Date) {
+        const today = new Date();
+        const age = today.getFullYear() - value.getFullYear();
+        return age >= 13 && age <= 120;
+      },
+      message: 'You must be at least 13 years old and not more than 120 years old'
+    }
   }
 }, {
   timestamps: true
