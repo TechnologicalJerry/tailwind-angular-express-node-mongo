@@ -9,8 +9,13 @@ export const userController = {
         message: 'Users retrieved successfully',
         users: users.map((user: any) => ({
           id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userName: user.userName,
           email: user.email,
-          name: user.name
+          phone: user.phone,
+          gender: user.gender,
+          dob: user.dob
         }))
       });
     } catch (error) {
@@ -35,8 +40,13 @@ export const userController = {
         message: 'User retrieved successfully',
         user: {
           id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userName: user.userName,
           email: user.email,
-          name: user.name
+          phone: user.phone,
+          gender: user.gender,
+          dob: user.dob
         }
       });
     } catch (error) {
@@ -63,8 +73,13 @@ export const userController = {
         message: 'User updated successfully',
         user: {
           id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userName: user.userName,
           email: user.email,
-          name: user.name
+          phone: user.phone,
+          gender: user.gender,
+          dob: user.dob
         }
       });
     } catch (error) {
