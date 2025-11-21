@@ -1,5 +1,5 @@
 import morgan from 'morgan';
-import { morganStream } from './logger.js';
+import { morganStream } from './logger';
 
 // Custom Morgan token for response time
 morgan.token('response-time', (req, res) => {

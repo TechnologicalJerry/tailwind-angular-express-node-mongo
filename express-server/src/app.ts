@@ -7,11 +7,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // Import logging utilities
-import { logInfo, logError } from './utils/logger.js';
-import { morganMiddleware, morganErrorMiddleware } from './utils/morgan.js';
+import { logInfo, logError } from './utils/logger';
+import { morganMiddleware, morganErrorMiddleware } from './utils/morgan';
 
 // Import routes
-import indexRoutes from './routes/index.routes.js';
+import indexRoutes from './routes/index.routes';
 
 
 const app = express();

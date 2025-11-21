@@ -5,7 +5,7 @@
  * Copy these patterns into your controllers, services, and middleware.
  */
 
-import { logInfo, logError, logWarn, logDebug } from './logger.js';
+import { logInfo, logError, logWarn, logDebug } from './logger';
 
 // ============================================================================
 // CONTROLLER LOGGING EXAMPLES

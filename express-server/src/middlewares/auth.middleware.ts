@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt.js';
-import { userService } from '../services/user.service.js';
+import { verifyToken } from '../utils/jwt';
+import { userService } from '../services/user.service';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {

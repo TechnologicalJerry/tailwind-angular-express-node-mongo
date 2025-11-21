@@ -1,4 +1,4 @@
-import { Product, type IProduct } from '../models/product.model.js';
+import { Product, type IProduct } from '../models/product.model';
 
 export interface CreateProductData {
   name: string;

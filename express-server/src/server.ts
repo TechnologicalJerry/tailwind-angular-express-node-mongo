@@ -1,16 +1,16 @@
-import app from './app.js';
-import { connectDB } from './config/database.js';
-import { logInfo, logError } from './utils/logger.js';
+import app from './app';
+import { connectDB } from './config/database';
+import { logInfo, logError } from './utils/logger';
 
-const PORT = process.env.PORT || 3000;
+const SERVER_PORT = process.env.SERVER_PORT || 9000;
 
 // Connect to database
 connectDB();
 
 // Start server
-app.listen(PORT, () => {
-  logInfo(`🚀 Server running on port ${PORT}`, {
-    port: PORT,
+app.listen(SERVER_PORT, () => {
+  logInfo(`🚀 Server running on port ${SERVER_PORT}`, {
+    port: SERVER_PORT,
     environment: process.env.NODE_ENV,
     timestamp: new Date().toISOString()
   });

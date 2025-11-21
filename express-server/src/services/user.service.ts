@@ -1,4 +1,4 @@
-import { User, type IUser } from '../models/user.model.js';
+import { User, type IUser } from '../models/user.model';
 
 export interface CreateUserData {
   firstName: string;

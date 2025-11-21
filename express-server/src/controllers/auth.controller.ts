@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { userService } from '../services/user.service.js';
-import { generateToken } from '../utils/jwt.js';
-import { hashPassword, comparePassword } from '../utils/hash.js';
-import { logInfo, logError, logWarn, logDebug } from '../utils/logger.js';
+import { userService } from '../services/user.service';
+import { generateToken } from '../utils/jwt';
+import { hashPassword, comparePassword } from '../utils/hash';
+import { logInfo, logError, logWarn, logDebug } from '../utils/logger';
 
 export const authController = {
   register: async (req: Request, res: Response) => {
