@@ -112,6 +112,7 @@ export const authController = {
   },
 
   login: async (req: Request, res: Response) => {
+    console.log('Login request received', req.body);
     try {
       const { email, password } = req.body;
 
