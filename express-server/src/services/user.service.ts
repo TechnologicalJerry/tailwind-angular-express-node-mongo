@@ -24,30 +24,55 @@ export interface UpdateUserData {
 
 export const userService = {
   create: async (userData: CreateUserData): Promise<IUser> => {
-    const user = new User(userData);
-    return await user.save();
+    try {
+      const user = await User.create(userData);
+      return user;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   },
 
   findAll: async (): Promise<IUser[]> => {
-    return await User.find().select('-password');
+    try {
+      return await User.find().select('-password');
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
   },
 
   findById: async (id: string): Promise<IUser | null> => {
-    return await User.findById(id).select('-password');
+    try {
+      return await User.findById(id).select('-password');
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
   },
 
   findByEmail: async (email: string): Promise<IUser | null> => {
-    return await User.findOne({ email });
+    try {
+      return await User.findOne({ email });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
   },
 
   findByUsername: async (userName: string): Promise<IUser | null> => {
-    return await User.findOne({ userName });
+    try {
+      return await User.findOne({ userName });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
   },
 
   update: async (id: string, updateData: UpdateUserData): Promise<IUser | null> => {
     return await User.findByIdAndUpdate(
-      id, 
-      updateData, 
+      id,
+      updateData,
       { new: true, runValidators: true }
     ).select('-password');
   },
