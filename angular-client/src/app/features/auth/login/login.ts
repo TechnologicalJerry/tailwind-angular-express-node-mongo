@@ -37,7 +37,7 @@ export class Login {
 
       this.auth.login(credentials).subscribe({
         next: () => {
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
           this.router.navigate([returnUrl]);
         },
         error: (error) => {
