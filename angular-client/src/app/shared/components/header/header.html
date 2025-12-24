@@ -1,0 +1,39 @@
+<header class="bg-white shadow-md">
+  <nav class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <a routerLink="/" class="text-2xl font-bold text-blue-600 hover:text-blue-700">
+        Logo
+      </a>
+      <ul class="flex items-center space-x-6">
+        @for (link of navLinks; track link.path) {
+          <li>
+            <a
+              [routerLink]="link.path"
+              routerLinkActive="text-blue-600 font-semibold"
+              [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+              class="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+        <li>
+          <a
+            routerLink="/login"
+            class="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+          >
+            Login
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/signup"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            Sign Up
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
