@@ -1,4 +1,7 @@
 import mongoose, { type Document, Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const SALT_ROUNDS = 12;
 
 export interface IUser extends Document {
   firstName: string;
@@ -9,6 +12,7 @@ export interface IUser extends Document {
   phone: string;
   gender: 'male' | 'female' | 'other';
   dob: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -86,5 +90,21 @@ userSchema.methods.toJSON = function() {
   delete userObject.password;
   return userObject;
 };
+
+userSchema.methods.comparePassword = function(candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
+}
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  try {
+    this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
+
 
 export const User = mongoose.model<IUser>('User', userSchema);
