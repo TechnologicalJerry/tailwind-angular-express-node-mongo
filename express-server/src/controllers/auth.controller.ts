@@ -1,47 +1,41 @@
 import type { Request, Response } from 'express';
 import { userService } from '../services/user.service';
 import { generateToken } from '../utils/jwt';
-import { hashPassword, comparePassword } from '../utils/hash';
 import { logInfo, logError, logWarn, logDebug } from '../utils/logger';
 
 export const authController = {
   register: async (req: Request, res: Response) => {
     try {
-      const { 
-        firstName, 
-        lastName, 
-        userName, 
-        email, 
-        password, 
-        confirmPassword, 
-        phone, 
-        gender, 
-        dob 
+      const {
+        firstName,
+        lastName,
+        userName,
+        email,
+        password,
+        phone,
+        gender,
+        dob
       } = req.body;
 
-      logInfo('User registration attempt', { 
-        email, 
-        userName, 
-        firstName, 
-        lastName 
+      logInfo('User registration attempt', {
+        email,
+        userName,
+        firstName,
+        lastName
       });
 
       // Validate required fields
-      if (!firstName || !lastName || !userName || !email || !password || !confirmPassword || !phone || !gender || !dob) {
-        logWarn('Registration failed: Missing required fields', { 
-          providedFields: Object.keys(req.body) 
+      if (!firstName || !lastName || !userName || !email || !password || !phone || !gender || !dob) {
+        logWarn('Registration failed: Missing required fields', {
+          providedFields: Object.keys(req.body)
         });
-        return res.status(400).json({ 
+        return res.status(400).json({
           message: 'All fields are required',
-          required: ['firstName', 'lastName', 'userName', 'email', 'password', 'confirmPassword', 'phone', 'gender', 'dob']
+          required: ['firstName', 'lastName', 'userName', 'email', 'password', 'phone', 'gender', 'dob']
         });
       }
 
-      // Validate password confirmation
-      if (password !== confirmPassword) {
-        logWarn('Registration failed: Password confirmation mismatch', { email });
-        return res.status(400).json({ message: 'Password and confirm password do not match' });
-      }
+      console.log('All required fields provided');
 
       // Check if user already exists by email
       const existingUserByEmail = await userService.findByEmail(email);
@@ -50,16 +44,17 @@ export const authController = {
         return res.status(400).json({ message: 'Email already exists' });
       }
 
+      console.log('Email is unique');
       // Check if username already exists
       const existingUserByUsername = await userService.findByUsername(userName);
       if (existingUserByUsername) {
         logWarn('Registration failed: Username already exists', { userName });
         return res.status(400).json({ message: 'Username already exists' });
       }
-
-      // Hash password
-      const hashedPassword = await hashPassword(password);
+      console.log('Username is unique');
       logDebug('Password hashed successfully');
+
+      console.log('Password hashed');
 
       // Create user
       const user = await userService.create({
@@ -67,17 +62,19 @@ export const authController = {
         lastName,
         userName,
         email,
-        password: hashedPassword,
+        password,
         phone,
         gender,
         dob: new Date(dob)
       });
 
+      console.log('User created:', user);
+
       // Generate token
       const token = generateToken((user._id as any).toString());
 
-      logInfo('User registered successfully', { 
-        userId: user._id, 
+      logInfo('User registered successfully', {
+        userId: user._id,
         email: user.email,
         userName: user.userName,
         firstName: user.firstName,
@@ -125,9 +122,8 @@ export const authController = {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Check password
-      const isPasswordValid = await comparePassword(password, user.password);
-      if (!isPasswordValid) {
+
+      if (!await user.comparePassword(password)) {
         logWarn('Login failed: Invalid password', { email });
         return res.status(401).json({ message: 'Invalid credentials' });
       }
@@ -135,8 +131,8 @@ export const authController = {
       // Generate token
       const token = generateToken((user._id as any).toString());
 
-      logInfo('User logged in successfully', { 
-        userId: user._id, 
+      logInfo('User logged in successfully', {
+        userId: user._id,
         email: user.email,
         timestamp: new Date().toISOString()
       });
@@ -175,7 +171,7 @@ export const authController = {
     try {
       const userId = (req as any).user.id;
       const user = await userService.findById(userId);
-      
+
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
