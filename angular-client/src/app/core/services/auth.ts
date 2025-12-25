@@ -1,7 +1,7 @@
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, catchError, of, map } from 'rxjs';
 import { Api } from './api';
 import { AuthResponse, LoginRequest, RegisterRequest, User } from '../../shared/models/auth.model';
 
@@ -25,7 +25,8 @@ export class Auth {
     if (this.isBrowser) {
       const token = this.getToken();
       if (token) {
-        this.checkAuth();
+        // Subscribe to checkAuth to restore authentication state
+        this.checkAuth().subscribe();
       }
     }
   }
@@ -69,23 +70,31 @@ export class Auth {
     );
   }
 
-  checkAuth(): void {
+  checkAuth(): Observable<boolean> {
     if (!this.isBrowser) {
-      return;
+      return of(false);
     }
 
     const token = this.getToken();
     if (token) {
-      this.getCurrentUser().subscribe({
-        next: () => {
-          // User is authenticated, signals are already updated in getCurrentUser
-        },
-        error: () => {
+      return this.getCurrentUser().pipe(
+        tap({
+          next: () => {
+            // User is authenticated, signals are already updated in getCurrentUser
+          },
+          error: () => {
+            this.clearAuthData();
+          },
+        }),
+        map(() => true),
+        catchError(() => {
           this.clearAuthData();
-        },
-      });
+          return of(false);
+        })
+      );
     } else {
       this.clearAuthData();
+      return of(false);
     }
   }
 
